@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELTA — Usługi Elektryczne & Prace Ziemne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070a; --card: #0c0e14; --border: rgba(245,158,11,0.15);
+    --text: #f3f4f6; --muted: #9ca3af; --gold: #f59e0b; --gold-dark: #b45309;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Jost', sans-serif; line-height: 1.6; overflow-x: hidden; }
+  
+  nav { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; color: #fff; font-size: 1.3rem; letter-spacing: -0.03em; }
+  .logo span { color: var(--gold); }
+
+  header { max-width: 900px; padding: 6rem 2rem 4rem; }
+  h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 1.5rem; }
+  h1 em { font-style: normal; color: var(--gold); }
+  .lead { font-size: 1.1rem; color: var(--muted); max-width: 600px; margin-bottom: 2.5rem; }
+
+  .btn { display: inline-block; background: var(--gold); color: #000; font-weight: 600; text-decoration: none; padding: 1rem 2rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; transition: transform 0.2s; border: none; cursor: pointer; }
+  .btn:hover { transform: translateY(-2px); }
+
+  section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+  h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 2rem; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .card { background: var(--card); border: 1px solid var(--border); padding: 2rem; border-radius: 4px; }
+  .card h3 { font-size: 1.3rem; margin-bottom: 1rem; color: #fff; }
+
+  /* CHMUROWA GALERIA */
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .gallery-item { position: relative; aspect-ratio: 4/3; background: #111; border: 1px solid var(--border); overflow: hidden; }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+  .del-btn { position: absolute; top: 8px; right: 8px; background: #ef4444; color: #fff; border: none; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; display: none; }
+
+  /* UKRYTY SYSTEM CMS / PANEL */
+  #admin-panel { display: none; background: #111522; border: 1px dashed var(--gold); padding: 2rem; margin-bottom: 2rem; }
+  
+  /* UKRYTY KALKULATOR ROBÓT LINIOWYCH DLA MŁODEGO */
+  #calc-panel { display: none; background: #14120c; border: 1px solid #854d0e; padding: 2rem; margin-bottom: 2rem; }
+  .calc-group { margin-bottom: 1rem; }
+  .calc-group label { display: block; font-size: 0.8rem; text-transform: uppercase; color: var(--gold); margin-bottom: 0.3rem; }
+  .calc-group input { width: 100%; background: #222; border: 1px solid #444; padding: 0.8rem; color: #fff; font-family: 'DM Mono', monospace; }
+
+  footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); }
+  .secret-trigger { cursor: pointer; text-decoration: underline; color: var(--gold); }
+</style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">ELTA<span>.</span></div>
+    <div style="font-family:'DM Mono'; font-size:0.8rem; color:var(--gold);">[ STATUS: ONLINE ]</div>
+  </nav>
+
+  <header>
+    <h1>Wykopy i instalacje.<br><em>Bez opóźnień.</em></h1>
+    <p class="lead">Kompleksowe przyłącza elektryczne, usługi minikoparką oraz sieci kablowe/światłowodowe w powiecie chełmskim. Czysta technika, sprzęt i uprawnienia SEP.</p>
+    <a href="tel:+48519404678" class="btn">Zadzwoń: +48 519 404 678</a>
+  </header>
+
+  <section style="padding-top:0; padding-bottom:0;">
+    <div id="admin-panel">
+      <h3 style="color:var(--gold); margin-bottom:1rem;">🔒 System Zarządzania Galerią Cloudinary</h3>
+      <input type="file" id="file-input" accept="image/*" style="margin-bottom:1rem; display:block;">
+      <button onclick="uploadPhoto()" class="btn" style="padding:0.5rem 1rem;">Wyślij Zdjęcie do Chmury</button>
+    </div>
+
+    <div id="calc-panel">
+      <h3 style="color:#fbbf24; margin-bottom:1rem; font-family:'DM Mono';">⚡ KALKULATOR METRÓW BIEŻĄCYCH</h3>
+      <div class="calc-group">
+        <label>Długość trasy (metry)</label>
+        <input type="number" id="c-metry" value="10" oninput="calculateInLoco()">
+      </div>
+      <div class="calc-group">
+        <label>Cena za metr wykopu z podsypką (PLN)</label>
+        <input type="number" id="c-cena" value="45" oninput="calculateInLoco()">
+      </div>
+      <div style="margin-top:1.5rem; font-family:'DM Mono'; font-size:1.2rem; color:#fff;">
+        Suma netto: <span id="c-wynik" style="color:#fbbf24; font-weight:bold;">450</span> PLN
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Zakres Działań</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Przyłącza i SEP</h3>
+        <p style="color:var(--muted)">Kompleksowa realizacja złączy kablowych, skrzynek licznikowych, wewnętrznych linii zasilających (WLZ).</p>
+      </div>
+      <div class="card">
+        <h3>Prace Ziemne</h3>
+        <p style="color:var(--muted)">Wykopy pod światłowody, kable energetyczne, wodę, kanalizację i fundamenty precyzyjną minikoparką.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Ostatnie Realizacje</h2>
+    <div class="gallery" id="gallery-container">
+      </div>
+  </section>
+
+  <footer>
+    <p>© 2026 ELTA Tadeusz Niedźwiecki. Wszystkie systemy zweryfikowane.</p>
+    <p style="margin-top:1.5rem; font-size:11px; font-family:'DM Mono';">
+      <span class="secret-trigger" onclick="toggleSystem('admin')">Zarządzanie</span> | 
+      <span class="secret-trigger" onclick="toggleSystem('calc')">Narzędzia Budowy</span>
+    </p>
+  </footer>
+
+  <script>
+    // Konfiguracja Twojej chmury
+    const CLOUD_NAME = "WPISZ_TUTAJ_SWÓJ_CLOUD_NAME";
+    const UPLOAD_PRESET = "elta_preset";
+
+    let gallery = JSON.parse(localStorage.getItem('elta_cdn_gallery')) || [
+      { id: "s1", src: "https://images.unsplash.com/photo-1541625602330-2277a4c46182?auto=format&fit=crop&w=500&q=80" },
+      { id: "s2", src: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=500&q=80" }
+    ];
+    let isLogged = false;
+
+    function render() {
+      const container = document.getElementById('gallery-container');
+      container.innerHTML = '';
+      gallery.forEach(img => {
+        container.innerHTML += `
+          <div class="gallery-item">
+            <button class="del-btn" style="display:${isLogged?'block':'none'}" onclick="deleteImg('${img.id}')">Usuń ✕</button>
+            <img src="${img.src}" alt="Budowa ELTA">
+          </div>`;
+      });
+    }
+
+    function toggleSystem(type) {
+      if(!isLogged) {
+        let pass = prompt("Podaj kod dostępu do systemu:");
+        if(pass === "elta2026" || pass === "admin") {
+          isLogged = true;
+          document.getElementById('admin-panel').style.display = type === 'admin' ? 'block' : 'none';
+          document.getElementById('calc-panel').style.display = type === 'calc' ? 'block' : 'none';
+          render();
+        }
+      } else {
+        const pAdmin = document.getElementById('admin-panel');
+        const pCalc = document.getElementById('calc-panel');
+        if(type === 'admin') pAdmin.style.display = pAdmin.style.display === 'block' ? 'none' : 'block';
+        if(type === 'calc') pCalc.style.display = pCalc.style.display === 'block' ? 'none' : 'block';
+      }
+    }
+
+    function uploadPhoto() {
+      const input = document.getElementById('file-input');
+      if(!input.files[0]) return;
+      
+      const formData = new FormData();
+      formData.append('file', input.files[0]);
+      formData.append('upload_preset', UPLOAD_PRESET);
+
+      fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+          if(data.secure_url) {
+            gallery.unshift({ id: data.public_id, src: data.secure_url });
+            localStorage.setItem('elta_cdn_gallery', JSON.stringify(gallery));
+            render();
+            input.value = '';
+          }
+        });
+    }
+
+    function deleteImg(id) {
+      if(confirm("Usunąć wpis z bazy?")) {
+        gallery = gallery.filter(i => i.id !== id);
+        localStorage.setItem('elta_cdn_gallery', JSON.stringify(gallery));
+        render();
+      }
+    }
+
+    function calculateInLoco() {
+      const m = document.getElementById('c-metry').value || 0;
+      const c = document.getElementById('c-cena').value || 0;
+      document.getElementById('c-wynik').textContent = m * c;
+    }
+
+    render();
+  </script>
+</body>
+</html>
